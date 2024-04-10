@@ -1,0 +1,19 @@
+{
+  "plugins": ["prettier"],
+  "extends": "next/core-web-vitals",
+  "root": true,
+  "env": {
+    "node": true,
+    "jest": true,
+    "es6": true
+  },
+  "ignorePatterns": ["node_module/**", ".next/**", "**/*.json", "**/*.yml", "*.md", "*ignore"],
+  "rules": {
+    "prettier/prettier": [
+      "warn",
+      {
+        "endOfLine": "auto"
+      }
+    ]
+  }
+}
