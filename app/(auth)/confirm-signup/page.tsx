@@ -1,9 +1,16 @@
+import { GetStaticPropsContext } from 'next'
+import ConfirmSignupComponent from '@/components/Auth/ConfirmSignupComponent'
 
 
-export default function ConfirmSignupPage() {
+const ConfirmSignupPage = async (context: GetStaticPropsContext) => {
+  const id = context?.params?.id as string;
+
   return (
     <>
-      <div>Hello</div>
+      <ConfirmSignupComponent id={Number(id)} />
     </>
   )
 }
+
+
+export default ConfirmSignupPage;

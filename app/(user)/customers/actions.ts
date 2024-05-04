@@ -18,3 +18,19 @@ export async function actionGetCustomers(keyword: string, currentPage: number) {
   return await response.json();
 }
 
+
+export async function actionGetSingleCustomers(customerId: number) {
+  const accessToken = await cookies().get("access_token");
+  const requestOptions: RequestInit = {
+    method: 'GET', // Adjust the HTTP method as needed
+    headers: {
+      Authorization: `Bearer ${accessToken?.value}`,
+      'Content-Type': 'application/json',
+    },
+  };
+
+  const response = await fetch(`${API_ENDPOINT}/customer/${customerId}`, requestOptions);
+  return await response.json();
+}
+
+

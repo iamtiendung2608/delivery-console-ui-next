@@ -17,9 +17,8 @@ const PostOfficesPage = async ({searchParams}: {
 })=> {
   const keyword = searchParams?.keyword || '';
   const currentPage = Number(searchParams?.page) - 1 || 0;
-  const accessToken = getCookie('access_token') ?? ''
-  const response = await actionGetPostOffices(keyword, currentPage, accessToken);
-
+  const response = await actionGetPostOffices(keyword, currentPage);
+  console.log(response)
   return (
     <>
       <div className="px-4 sm:px-6 lg:px-8">

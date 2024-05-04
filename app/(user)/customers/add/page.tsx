@@ -4,7 +4,7 @@ import FormAddCustomer, { FormAddCustomerRequest } from '@/components/Customers/
 const formAddCustomer: FormAddCustomerRequest = {
   id: 0,
   fullName: '',
-  email: 'MONTHLY',
+  email: '',
   phone: '',
   address: '',
   locationTagId: 0

@@ -5,7 +5,6 @@ import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useLayoutEffect, useRef } from 'react'
 
 export default function Page() {
-  console.log('zz')
   const ref = useRef<HTMLDialogElement>(null)
   const router = useRouter()
   const pathname = usePathname()

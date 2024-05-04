@@ -1,16 +1,16 @@
 'use client'
 import { useState } from 'react'
 
-const CheckboxTwo = () => {
+const CheckboxTwo = ({ name }: { name: string }) => {
   const [isChecked, setIsChecked] = useState<boolean>(false)
 
   return (
     <div>
-      <label htmlFor='checkboxLabelTwo' className='flex cursor-pointer select-none items-center'>
+      <label htmlFor={name} className='flex cursor-pointer select-none items-center'>
         <div className='relative'>
           <input
             type='checkbox'
-            id='checkboxLabelTwo'
+            id={name}
             className='sr-only'
             onChange={() => {
               setIsChecked(!isChecked)
@@ -33,7 +33,7 @@ const CheckboxTwo = () => {
             </span>
           </div>
         </div>
-        Checkbox Text
+        {name}
       </label>
     </div>
   )
