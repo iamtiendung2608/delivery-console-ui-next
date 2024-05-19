@@ -10,7 +10,7 @@ export interface TransferObjectResponse {
   receiveShift: ReceiveShift;
   customer: CustomerShortResponse;
   postOffice: PostOfficesShortResponse;
-  actionDate: Date
+  actionDate: string
 }
 
 export interface CustomerShortResponse {

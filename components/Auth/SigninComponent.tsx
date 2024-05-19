@@ -8,7 +8,7 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { useFormik } from 'formik'
 import * as Yup from 'yup';
 import { actionSubmitSignin } from '@/app/(auth)/signin/actions'
-import { setCookiesHeader } from '@/utils/api'
+import { setCookiesHeader, setRoleHeader } from '@/utils/api'
 import { toast } from 'react-toastify'
 
 
@@ -28,8 +28,8 @@ const SigninComponent: FC<SignInFormRequest> = ({ email, password}) => {
       try {
         const response = await actionSubmitSignin(values);
         if (response.status === 200) {
-          const accessToken = response.accessToken;
-          await setCookiesHeader(accessToken);
+          await setCookiesHeader(response.accessToken);
+          await setRoleHeader(response.roleCode);
           window.location.href = '/';
         } else {
           toast.error('Signin failed!');

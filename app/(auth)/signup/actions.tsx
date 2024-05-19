@@ -17,6 +17,7 @@ interface SignUpFormRequest {
   retypePassword: string
   fullName: string
 }
+
 export async function actionSubmitSignup(body : SignUpFormRequest): Promise<SignUpFormResponse> {
   const payload = JSON.stringify(body)
   const response = await fetchWithRetry(`${API_ENDPOINT}/auth/signup`, {

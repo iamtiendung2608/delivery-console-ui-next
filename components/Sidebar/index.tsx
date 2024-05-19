@@ -3,6 +3,9 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import React, { useEffect, useRef, useState } from 'react'
 import SidebarLinkGroup from './SidebarLinkGroup'
+import { cookies } from 'next/headers'
+import { actionGetCustomers } from '@/app/(user)/customers/actions'
+import { actionGetSingleTransferObject } from '@/app/(user)/order/single-form/actions'
 
 interface SidebarProps {
   sidebarOpen: boolean
@@ -188,12 +191,11 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                   return (
                     <React.Fragment>
                       <Link
-                        href="#"
+                        href="/order"
                         className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
                           (pathname === '/order' || pathname.includes('forms')) && 'bg-graydark dark:bg-meta-4'
                         }`}
                         onClick={e => {
-                          e.preventDefault()
                           sidebarExpanded ? handleClick() : setSidebarExpanded(true)
                         }}
                       >

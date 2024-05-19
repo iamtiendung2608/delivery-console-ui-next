@@ -37,3 +37,7 @@ export async function fetchWithRetry(url: string, options?: RequestInit, maxRetr
 export const setCookiesHeader = (value: any) => {
   cookies().set('access_token', value)
 }
+
+export const setRoleHeader = (value: any) => {
+  cookies().set('role', value)
+}

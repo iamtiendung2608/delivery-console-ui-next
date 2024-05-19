@@ -3,120 +3,46 @@ import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Button } from '@/app/_components/button'
-import { actionSubmitVerify } from '@/app/(auth)/verify/actions'
-import { toast } from 'react-hot-toast'
+import { actionResendVerify, actionSubmitVerify } from '@/app/(auth)/verify/actions'
+import { toast, Toaster } from 'react-hot-toast'
 import OtpInput from 'react-otp-input';
+import { useRouter, useSearchParams } from 'next/navigation'
+import Countdown from 'react-countdown';
 
-
-type PartialInputProps = Pick<
-  React.ComponentPropsWithoutRef<"input">,
-  "className" | "style"
->;
-
-export type Props = {
-  /**
-   * full value of the otp input, up to {size} characters
-   */
-  value: string;
-  onChange(value: string): void;
-  id: string;
-  /**
-   * Number of characters/input for this component
-   */
-  size?: number;
-  /**
-   * Validation pattern for each input.
-   * e.g: /[0-9]{1}/ for digits only or /[0-9a-zA-Z]{1}/ for alphanumeric
-   */
-  validationPattern?: RegExp;
-} & PartialInputProps;
 
 const VerifyComponent = () => {
-  // const [otp, setOtp] = useState("");
-  //
-  // const {
-  //   //Set the default size to 6 characters
-  //   size = 6,
-  //   //Default validation is digits
-  //   validationPattern = /[0-9]{1}/,
-  //   value = otp,
-  //   id,
-  //   onChange,
-  //   className,
-  //   ...restProps
-  // } = props;
-
-  // Create an array based on the size.
-  // const arr = new Array(size).fill("-");
-  //
-  // const handleInputChange = async (
-  //   e: React.ChangeEvent<HTMLInputElement>,
-  //   index: number
-  // ) => {
-  //   const elem = e.target;
-  //   const val = e.target.value;
-  //
-  //   // check if the value is valid
-  //   if (!validationPattern.test(val) && val !== "") return;
-  //
-  //   // change the value using onChange props
-  //   const valueArr = value.split("");
-  //   valueArr[index] = val;
-  //   const newVal = valueArr.join("").slice(0, 6);
-  //   onChange(newVal);
-  //
-  //   // Submit OTP for verification when all 6 digits are entered
-  //   if (valueArr.length === 6) {
-  //     const response = await actionSubmitVerify({ id, otp: newVal });
-  //     if (response.status === 200) {
-  //       // Verification successful
-  //       toast.success("Verify success!");
-  //       // Redirect to confirmation page
-  //       window.location.href = 'confirm-signup';
-  //     } else {
-  //       // Verification failed
-  //       toast.error("Verify Fail!");
-  //       // Reset OTP and focus on the first input element
-  //       onChange("");
-  //       const firstInput = document.querySelector('input[type="text"]') as HTMLInputElement | null;
-  //       firstInput?.focus();
-  //     }
-  //
-  //   //focus the next element if there's a value
-  //   if (val) {
-  //     const next = elem.nextElementSibling as HTMLInputElement | null;
-  //     next?.focus();
-  //   }
-  // };
-  //
-  // const handleKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
-  //   const current = e.currentTarget;
-  //   if (e.key === "ArrowLeft" || e.key === "Backspace") {
-  //     const prev = current.previousElementSibling as HTMLInputElement | null;
-  //     prev?.focus();
-  //     prev?.setSelectionRange(0, 1);
-  //     return;
-  //   }
-  //
-  //   if (e.key === "ArrowRight") {
-  //     const prev = current.nextSibling as HTMLInputElement | null;
-  //     prev?.focus();
-  //     prev?.setSelectionRange(0, 1);
-  //     return;
-  //   }
-  // };
-  //
-  // const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
-  //   e.preventDefault();
-  //   const val = e.clipboardData.getData("text").substring(0, size);
-  //   onChange(val);
-  // };
-
   const [otp, setOtp] = useState('');
+  const [allowResend, setAllowResend] = useState<boolean>(true);
+  const searchParams = useSearchParams()
+  const id = searchParams.get('id')
+  const router = useRouter();
 
+  const handlerVerification = async () => {
+    if (id !== null) {
+      const response = await actionSubmitVerify({ id: id, otp: otp });
+
+      if (response.status === 200) {
+        toast.success('Verification successful');
+        const params = new URLSearchParams(searchParams);
+        params.set('id', id);
+        router.push(`/confirm-signup?${params.toString()}`);
+        router.refresh();
+      }
+    }
+  };
+
+  const onResendEmailCode = async () => {
+    const response = await actionResendVerify(id);
+    console.log(response);
+    if (response === 200) {
+      toast.success('Resend verification successful');
+    }
+    toast.error('Resend verification fail');
+  }
 
   return (
   <div className='rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark'>
+    <Toaster />
     <div className='flex flex-wrap items-center'>
       <div className='hidden w-full xl:block xl:w-1/2'>
         <div className='py-17.5 px-26 text-center'>
@@ -247,11 +173,16 @@ const VerifyComponent = () => {
             {/* Map through the array and render input components */}
             <OtpInput
               value={otp}
-              onChange={setOtp}
+              onChange={(otp) => {
+                setOtp(otp);
+                // Automatically send OTP to API when all input fields are filled
+                if (otp.length === 6) {
+                  handlerVerification();
+                }
+              }}
               numInputs={6}
-              inputStyle='input input-bordered px-0
-              w-10 h:14 md:w-14 md:h-16 outline-none rounded-xl border border-gray-200 text-lg bg-white focus:bg-gray-50 focus:ring-1 ring-blue-700
-              text-2xl md:text-4xl text-center'
+              containerStyle="flex justify-center space-x-2"
+              inputStyle="input input-bordered w-12 h-12 md:w-14 md:h-14 rounded border-green-500 text-center text-2xl md:text-3xl"
               renderInput={(props) => <input {...props} />}
             />
           </div>
@@ -273,18 +204,16 @@ const VerifyComponent = () => {
             <div
               className="flex flex-row items-center justify-center text-center text-sm font-medium space-x-1 text-gray-500">
               <p>Didn't receive code?</p>
-              {/*{*/}
-              {/*  allowResend ? (*/}
-              {/*    <div onClick={() => onResendEmailCode(verificationId)}*/}
-              {/*         className="flex flex-row items-center text-blue-600 cursor-pointer">Resend</div>*/}
-              {/*  ) : (*/}
-              {/*    <div>Resend after <Countdown callbackEnd={() => setAllowResend(true)} seconds={10} /></div>*/}
-              {/*  )*/}
-              {/*}*/}
+              {
+                allowResend ? (
+                  <div onClick={() => onResendEmailCode()}
+                       className="flex flex-row items-center text-blue-600 cursor-pointer">Resend</div>
+                ) : (
+                  <div>Resend after <Countdown onStop={() => setAllowResend(true)} date={Date.now() + 10000} /></div>
+                )
+              }
             </div>
           </div>
-
-
         </div>
       </div>
     </div>

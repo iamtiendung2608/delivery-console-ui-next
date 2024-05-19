@@ -5,12 +5,9 @@ import VerifyComponent from '@/components/Auth/VerifyComponent'
 
 
 const VerifyOTP = (context: GetStaticPropsContext) => {
-  const id = context?.params?.id as string;
 
   return (
-    <VerifyComponent
-
-    />
+    <VerifyComponent />
   );
 }
 

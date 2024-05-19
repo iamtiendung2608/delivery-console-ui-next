@@ -7,7 +7,8 @@ interface SignInFormResponse {
   message: string,
   error: boolean,
   status: number,
-  accessToken: string
+  accessToken: string,
+  roleCode: string
 }
 
 interface SignInFormRequest {
@@ -24,5 +25,6 @@ export async function actionSubmitSignin(body : SignInFormRequest): Promise<Sign
     },
     body: payload
   })
-  return { message: 'Signin successful.', error: false, status: response.status, accessToken: (await response.json()).accessToken }
+  const data = await response.json();
+  return { message: 'Signin successful.', error: false, status: response.status, accessToken: data.accessToken, roleCode: data.roleCode }
 }
