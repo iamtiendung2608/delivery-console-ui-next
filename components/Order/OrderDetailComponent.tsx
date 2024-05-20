@@ -115,9 +115,9 @@ const OrderDetailComponent: FC<{ id: string }> = ({ id }) => {
                   <dd className="mt-2 text-gray-500">
                     <span className="font-medium text-gray-900">{order?.sender?.customer?.fullName}</span>
                     <br />
-                    7363 Cynthia Pass
+                    {formatLocation(order?.sender?.customer?.locationTag)}
                     <br />
-                    Toronto, ON N3Y 4H8
+                    {order?.sender?.customer?.address}
                   </dd>
                 </div>
                 <div className="mt-8 sm:mt-6 sm:border-t sm:border-gray-900/5 sm:pl-4 sm:pt-6">
@@ -125,9 +125,9 @@ const OrderDetailComponent: FC<{ id: string }> = ({ id }) => {
                   <dd className="mt-2 text-gray-500">
                     <span className="font-medium text-gray-900">{order?.receiver?.customer?.fullName}</span>
                     <br />
-                    886 Walter Street
+                    {formatLocation(order?.receiver?.customer?.locationTag)}
                     <br />
-                    New York, NY 12345
+                    {order?.receiver?.customer?.address}
                   </dd>
                 </div>
               </dl>
@@ -188,7 +188,7 @@ const OrderDetailComponent: FC<{ id: string }> = ({ id }) => {
                     Subtotal
                   </th>
                   <td className="pb-0 pl-8 pr-0 pt-6 text-right tabular-nums text-gray-900">
-                    {order?.totalPrice.toLocaleString('vi-VN', {
+                    {order?.subTotal.toLocaleString('vi-VN', {
                       style: 'currency',
                       currency: 'VND'
                     })}
@@ -196,17 +196,17 @@ const OrderDetailComponent: FC<{ id: string }> = ({ id }) => {
                 </tr>
                 <tr>
                   <th scope="row" className="pt-4 font-normal text-gray-700 sm:hidden">
-                    Tax
+                    Delivery fee
                   </th>
                   <th
                     scope="row"
                     colSpan={3}
                     className="hidden pt-4 text-right font-normal text-gray-700 sm:table-cell"
                   >
-                    Tax
+                    Delivery fee
                   </th>
                   <td className="pb-0 pl-8 pr-0 pt-4 text-right tabular-nums text-gray-900">
-                    {order?.totalPrice.toLocaleString('vi-VN', {
+                    {order?.feePaid.toLocaleString('vi-VN', {
                       style: 'currency',
                       currency: 'VND'
                     })}
@@ -293,6 +293,10 @@ function formatWeight(quantity) {
   } else {
     return `${quantity} gam`; // Display as gram
   }
+}
+
+function formatLocation(locationTag){
+  return `${locationTag?.province}, ${locationTag?.district}, ${locationTag?.ward}`
 }
 
 export default OrderDetailComponent;
