@@ -1,5 +1,6 @@
 'use server';
 import { cookies } from 'next/headers'
+import { deleteCookie } from 'cookies-next'
 
 export async function fetchWithRetry(url: string, options?: RequestInit, maxRetries: number = 0, timeout: number = 5000) {
   let retries = 0
@@ -40,4 +41,9 @@ export const setCookiesHeader = (value: any) => {
 
 export const setRoleHeader = (value: any) => {
   cookies().set('role', value)
+}
+
+export const clearCookies = () => {
+  deleteCookie('access_token', { cookies });
+  deleteCookie('role', { cookies });
 }

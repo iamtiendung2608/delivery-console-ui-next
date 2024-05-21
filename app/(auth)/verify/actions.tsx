@@ -3,19 +3,20 @@ import { fetchWithRetry } from "@/utils/api";
 import { API_ENDPOINT } from '@/utils/contstants';
 
 export interface VerifyFormRequest {
-  id: string | null
-  otp: string
+  id: number
+  code: string
 }
 
-export async function actionSubmitVerify(body : VerifyFormRequest) {
+export async function actionSubmitVerify(body: VerifyFormRequest) {
   const payload = JSON.stringify(body)
-  return await fetchWithRetry(`${API_ENDPOINT}/auth/verify`, {
+  const response = await fetchWithRetry(`${API_ENDPOINT}/auth/verify`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
     },
     body: payload
-  })
+  });
+  return await response.status;
 }
 
 

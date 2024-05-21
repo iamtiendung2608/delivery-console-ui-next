@@ -119,7 +119,7 @@ function Items({ items }: { items: any }) {
         ))}
       <div className="grid grid-cols-2">
         <div className="mt-3 text-left">
-          <Link href={'/promotion/add'} passHref>
+          <Link href={'/order/single-form'} passHref>
             <Button>Add New Order</Button>
           </Link>
         </div>
