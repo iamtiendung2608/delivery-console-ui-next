@@ -3,13 +3,71 @@
 
 import Breadcrumb from '@/components/Breadcrumbs/Breadcrumb'
 import Image from 'next/image'
+import { actionGetOrganizationDetail, actionGetUser } from '@/app/settings/action'
+import { OrganizationCategory, OrganizationScale, OrganizationScope } from '@/components/Auth/ConfirmSignupComponent'
+import { useFormik } from 'formik'
+import { actionAddCustomer, actionEditCustomer } from '@/app/(user)/customers/add/actions'
+import toast, { Toaster } from 'react-hot-toast'
+import * as Yup from 'yup'
+import { useEffect, useState } from 'react'
+import { Simulate } from 'react-dom/test-utils'
+import reset = Simulate.reset
+
+export interface UserResponse {
+  id: number;
+  email: string;
+  organizationId: number;
+  status: UserStatus;
+  fullName: string;
+}
+
+export interface OrganizationResponse {
+  id: number
+  name: string
+  description: string
+  scale: OrganizationScale
+  category: OrganizationCategory
+  scope: OrganizationScope
+}
+
+type UserStatus = 'ACTIVE' | 'INACTIVE' | 'BLOCK';
 
 const SettingsComponent = () => {
+
+  const [user, setUser] = useState<UserResponse>();
+  const [organization, setOrganization] = useState<OrganizationResponse>();
+
+  useEffect(() => {
+    ;(async () => {
+      const user = await actionGetUser();
+      setUser(user);
+      setOrganization(await actionGetOrganizationDetail(user.organizationId));
+    })()
+  }, [])
+
+
+  const formik = useFormik<UserResponse>({ // Remove undefined from the type
+    initialValues: user || { id: 0, email: '', organizationId: 0, status: 'ACTIVE', fullName: '' },
+    onSubmit: async (values, { resetForm }) => {
+      try {
+        // const response = await actionEditUser(values);
+        toast.success("Edit user success!");
+      } catch {
+        toast.error("Edit user fail!");
+        resetForm();
+      }
+    },
+    validationSchema: Yup.object({
+      fullName: Yup.string().trim().required('Full name is required'),
+      email: Yup.string().trim().required('Email is required'),
+    }),
+  });
+
   return (
     <>
       <div className='mx-auto max-w-270'>
         <Breadcrumb pageName='Settings' />
-
+        <Toaster/>
         <div className='grid grid-cols-5 gap-8'>
           <div className='col-span-5 xl:col-span-3'>
             <div
@@ -54,9 +112,9 @@ const SettingsComponent = () => {
                           className='w-full rounded border border-stroke bg-gray py-3 pl-11.5 pr-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary'
                           type='text'
                           name='fullName'
-                          id='fullName'
-                          placeholder='Devid Jhon'
-                          defaultValue='Devid Jhon'
+                          value={formik.values.fullName}
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
                         />
                       </div>
                     </div>

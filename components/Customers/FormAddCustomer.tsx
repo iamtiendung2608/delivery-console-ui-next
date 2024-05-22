@@ -1,12 +1,12 @@
 'use client';
 
-import { FC, useState } from 'react'
+import { FC, useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useFormik } from 'formik'
 import Link from 'next/link'
 import * as Yup from 'yup'
 import LocationComponent from '@/components/Location/LocationComponent'
-import { actionAddCustomer } from '@/app/(user)/customers/add/actions'
+import { actionAddCustomer, actionEditCustomer } from '@/app/(user)/customers/add/actions'
 import toast, { Toaster } from 'react-hot-toast';
 
 
@@ -37,24 +37,41 @@ const FormAddCustomer: FC<{ formAddCustomer: FormAddCustomerRequest, editAction:
   const formik = useFormik({
     initialValues: getInitialValues(formAddCustomer),
     onSubmit: async (values, { resetForm }) => {
-      values.locationTagId = locationId;
-      const response = await actionAddCustomer(values);
-
-      if (response === 200) {
-        toast.success("Create customer success");
-        router.push('/customers');
+      if (!editAction) {
+        values.locationTagId = locationId;
+        const response = await actionAddCustomer(values);
+        if (response === 200) {
+          toast.success("Create customer success");
+          router.push('/customers');
+        } else {
+          toast.error("Create customer fail!");
+          resetForm();
+        }
       } else {
-        toast.error("Create customer fail!");
-        resetForm();
+        values.locationTagId = locationId;
+        const response = await actionEditCustomer(values);
+        if (response === 200) {
+          toast.success("Update customer success");
+          router.push('/customers');
+        } else {
+          toast.error("Update customer fail!");
+          resetForm();
+        }
       }
     },
     validationSchema: Yup.object({
       fullName: Yup.string().trim().required('Full name is required'),
       email: Yup.string().trim().required('Email is required'),
-      phone: Yup.string().matches(phoneRegExp, 'Phone number is not valid'),
+      phone: Yup.string().required().matches(phoneRegExp, 'Phone number is not valid'),
       address: Yup.string().trim().required('Address is required')
     })
   });
+
+  useEffect(() => {
+    if (formAddCustomer) {
+      setLocationId(formAddCustomer.id);
+    }
+  }, [formAddCustomer])
 
   const handleLocationChange = (id: number) => {
     setLocationId(id);
@@ -65,7 +82,7 @@ const FormAddCustomer: FC<{ formAddCustomer: FormAddCustomerRequest, editAction:
     <>
       <form onSubmit={formik.handleSubmit}>
         <div className="space-y-12">
-          <div className="border-b border-gray-900/10 pb-12">
+          <div className="border-b border-gray-900/10 pb-12 bg-white px-3 py-5 rounded">
             <h2 className="text-base font-semibold leading-7 text-gray-900">Customer Information</h2>
             <p className="mt-1 text-sm leading-6 text-gray-600">Add customer to send and receive items</p>
             <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
@@ -79,7 +96,8 @@ const FormAddCustomer: FC<{ formAddCustomer: FormAddCustomerRequest, editAction:
                     name="fullName"
                     id="first-name"
                     autoComplete="given-name"
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    placeholder="Full name"
+                    className="bg-white w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                     value={formik.values.fullName}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
@@ -100,7 +118,7 @@ const FormAddCustomer: FC<{ formAddCustomer: FormAddCustomerRequest, editAction:
                     name="phone"
                     id="last-name"
                     autoComplete="family-name"
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                     value={formik.values.phone}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
@@ -121,7 +139,7 @@ const FormAddCustomer: FC<{ formAddCustomer: FormAddCustomerRequest, editAction:
                     name="email"
                     type="email"
                     autoComplete="email"
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                     value={formik.values.email}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
@@ -142,7 +160,7 @@ const FormAddCustomer: FC<{ formAddCustomer: FormAddCustomerRequest, editAction:
                     name="address"
                     id="street-address"
                     autoComplete="street-address"
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                     value={formik.values.address}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
@@ -153,9 +171,8 @@ const FormAddCustomer: FC<{ formAddCustomer: FormAddCustomerRequest, editAction:
                 </div>
               </div>
               <div className="col-span-full">
-                <LocationComponent onLocationChange={handleLocationChange} locationId={'0'} />
+                <LocationComponent onLocationChange={handleLocationChange} locationId={locationId} />
               </div>
-
             </div>
           </div>
         </div>

@@ -51,6 +51,23 @@ export async function actionAddCustomer(formAddCustomer: FormAddCustomerRequest)
 }
 
 
+export async function actionEditCustomer(formAddCustomer: FormAddCustomerRequest) {
+  const accessToken = await cookies().get("access_token");
+  const requestOptions: RequestInit = {
+    method: 'PUT', // Adjust the HTTP method as needed
+    headers: {
+      Authorization: `Bearer ${accessToken?.value}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(formAddCustomer)
+  };
+
+  const response = await fetch(`${API_ENDPOINT}/customer/${formAddCustomer.id}`, requestOptions);
+  return response.status
+}
+
+
+
 
 
 

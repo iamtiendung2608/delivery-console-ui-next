@@ -10,7 +10,6 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import Countdown from 'react-countdown';
 
 
-
 const VerifyComponent = () => {
   const [otp, setOtp] = useState('');
   const [allowResend, setAllowResend] = useState<boolean>(true);

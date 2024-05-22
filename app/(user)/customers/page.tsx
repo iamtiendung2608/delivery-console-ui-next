@@ -68,9 +68,9 @@ const CustomersPage = async ({searchParams}: {
                       <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{item.email}</td>
                       <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{item.address}</td>
                       <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-left text-sm font-medium sm:pr-6">
-                        <a href="#" className="text-indigo-600 hover:text-indigo-900">
+                        <Link href={`/customers/${item.id}`} className="text-indigo-600 hover:text-indigo-900">
                           Edit<span className="sr-only">, {item.fullName}</span>
-                        </a>
+                        </Link>
                       </td>
                     </tr>
                   ))}

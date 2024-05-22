@@ -20,13 +20,13 @@ export interface ConfirmSignupProps {
   category: OrganizationCategory,
   scope: OrganizationScope
 }
-enum OrganizationScale {
+export enum OrganizationScale {
   SMALL = 'small', LARGE = 'large', MEDIUM = 'medium'
 }
-enum OrganizationCategory {
+export enum OrganizationCategory {
   FASHION = 'fashion', SPORT = 'sport', FRAGILE = 'fragile'
 }
-enum OrganizationScope {
+export enum OrganizationScope {
   PERSONAL = 'personal', ORGANIZATION = 'organization'
 }
 interface ConfirmSignupRequest {
