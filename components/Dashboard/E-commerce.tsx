@@ -116,6 +116,7 @@ const ECommerce: React.FC = () => {
           <TableOne />
         </div>
       </div>
+      <MapOne />
     </>
   )
 }
