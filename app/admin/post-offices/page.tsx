@@ -1,13 +1,14 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
 import Pagination from '@/app/_components/paging/Pagination'
-import { actionGetPostOffices } from '@/app/(user)/post-offices/actions'
+import { actionGetAdminPostOffices } from '@/app/admin/post-offices/actions'
+import { Button } from '@/app/_components/button'
 export const metadata: Metadata = {
   title: 'Customer',
   description: 'This is Tables page for ...'
 }
 
-const PostOfficesPage = async ({searchParams}: {
+const AdminPostOfficesPage = async ({searchParams}: {
   searchParams?: {
     keyword?: string;
     page?: string;
@@ -15,7 +16,7 @@ const PostOfficesPage = async ({searchParams}: {
 })=> {
   const keyword = searchParams?.keyword || '';
   const currentPage = Number(searchParams?.page) - 1 || 0;
-  const response = await actionGetPostOffices(keyword, currentPage);
+  const response = await actionGetAdminPostOffices(keyword, currentPage);
   console.log(response)
   return (
     <>
@@ -68,8 +69,8 @@ const PostOfficesPage = async ({searchParams}: {
                       <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{item.address}</td>
                       <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{item.sponsor}</td>
                       <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-left text-sm font-medium sm:pr-6">
-                        <Link href={`/post-offices/${item.id}`} className="text-indigo-600 hover:text-indigo-900">
-                          View Details<span className="sr-only">, {item.fullName}</span>
+                        <Link href={`/admin/post-offices/${item.id}`} className="text-indigo-600 hover:text-indigo-900">
+                          Edit<span className="sr-only">, {item.fullName}</span>
                         </Link>
                       </td>
                     </tr>
@@ -82,7 +83,9 @@ const PostOfficesPage = async ({searchParams}: {
         </div>
         <div className="grid grid-cols-2">
           <div className="mt-3 text-left">
-
+            <Link href={'/admin/post-offices/add'} passHref>
+              <Button>Add New Post Offices</Button>
+            </Link>
           </div>
           <div className="mt-3 text-right">
             <Pagination totalPages={response?.totalPages} />
@@ -94,4 +97,4 @@ const PostOfficesPage = async ({searchParams}: {
 }
 
 
-export default PostOfficesPage
+export default AdminPostOfficesPage

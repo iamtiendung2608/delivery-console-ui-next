@@ -8,6 +8,8 @@ import './satoshi.css'
 import Header from '@/components/Header'
 import Sidebar from '@/components/Sidebar'
 import { Toaster } from 'react-hot-toast'
+import getRole from '@/app/actions'
+import { useRouter } from 'next/navigation'
 
 type Props = PropsWithChildren<{
   modal: React.ReactNode
@@ -15,12 +17,21 @@ type Props = PropsWithChildren<{
 
 export default function RootLayout({ children, modal }: Props) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
-
+  const [role, setRole] = useState<string>()
   const [loading, setLoading] = useState<boolean>(true)
+  const router = useRouter();
 
   useEffect(() => {
     setTimeout(() => setLoading(false), 1000)
+    ;(async () => {
+      const response = await getRole();
+      if (response === undefined) {
+        router.push('/signin');
+      }
+      setRole(await response);
+    })()
   }, [])
+
 
   return (
     <html lang='en'>
@@ -31,7 +42,7 @@ export default function RootLayout({ children, modal }: Props) {
           ) : (
             <div className='flex h-screen overflow-hidden'>
               {/* <!-- ===== Sidebar Start ===== --> */}
-              <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+              <Sidebar role={role} sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
               {/* <!-- ===== Sidebar End ===== --> */}
 
               {/* <!-- ===== Content Area Start ===== --> */}

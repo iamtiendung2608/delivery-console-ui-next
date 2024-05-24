@@ -1,30 +1,32 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
 import Pagination from '@/app/_components/paging/Pagination'
-import { actionGetPostOffices } from '@/app/(user)/post-offices/actions'
+import { actionGetAdminPostOffices } from '@/app/admin/post-offices/actions'
+import { actionGetOrders } from '@/app/(user)/order/actions'
+import { actionGetAdminOrders } from '@/app/admin/order/actions'
+import { formatDistanceToNow } from 'date-fns'
 export const metadata: Metadata = {
   title: 'Customer',
   description: 'This is Tables page for ...'
 }
 
-const PostOfficesPage = async ({searchParams}: {
+const AdminPostOfficesPage = async ({searchParams}: {
   searchParams?: {
     keyword?: string;
     page?: string;
   };
 })=> {
-  const keyword = searchParams?.keyword || '';
   const currentPage = Number(searchParams?.page) - 1 || 0;
-  const response = await actionGetPostOffices(keyword, currentPage);
-  console.log(response)
+  const response = await actionGetAdminOrders(currentPage);
+
   return (
     <>
       <div className="px-4 sm:px-6 lg:px-8">
         <div className="sm:flex sm:items-center">
           <div className="sm:flex-auto">
-            <h1 className="text-base font-semibold leading-6 text-gray-900">Post Offices</h1>
+            <h1 className="text-base font-semibold leading-6 text-gray-900">Order</h1>
             <p className="mt-2 text-sm text-gray-700">
-              List of post offices
+              List of orders
             </p>
           </div>
           <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
@@ -41,16 +43,19 @@ const PostOfficesPage = async ({searchParams}: {
                       ID
                     </th>
                     <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                      Name
+                      Status
                     </th>
                     <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                      Phone
+                      Total Weight
                     </th>
                     <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                      Address
+                      Total Price
                     </th>
                     <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                      Sponsor
+                      Delivery Type
+                    </th>
+                    <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                      Created At
                     </th>
                     <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
                       Action
@@ -63,13 +68,16 @@ const PostOfficesPage = async ({searchParams}: {
                       <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
                         {item.id}
                       </td>
-                      <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{item.name}</td>
-                      <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{item.phone}</td>
-                      <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{item.address}</td>
-                      <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{item.sponsor}</td>
+                      <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{item.status}</td>
+                      <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{item.totalWeight} (g)</td>
+                      <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{item.totalPrice} (vnd)</td>
+                      <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{item.deliveryType}</td>
+                      <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                        {formatDistanceToNow(new Date(item.createdAt), { addSuffix: true })}
+                      </td>
                       <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-left text-sm font-medium sm:pr-6">
-                        <Link href={`/post-offices/${item.id}`} className="text-indigo-600 hover:text-indigo-900">
-                          View Details<span className="sr-only">, {item.fullName}</span>
+                        <Link href={`/order/${item.id}`} className="text-indigo-600 hover:text-indigo-900">
+                          View Detail<span className="sr-only">, {item.fullName}</span>
                         </Link>
                       </td>
                     </tr>
@@ -94,4 +102,4 @@ const PostOfficesPage = async ({searchParams}: {
 }
 
 
-export default PostOfficesPage
+export default AdminPostOfficesPage

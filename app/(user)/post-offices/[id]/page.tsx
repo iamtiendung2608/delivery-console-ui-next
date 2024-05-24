@@ -1,6 +1,7 @@
-import FormAddPostOffices from '@/components/PostOffices/FormAddPostOffices'
+import FormAddPostOffices from '@/components/PostOffices/PostOfficeDetail'
 import { actionGetPostOfficesDetail } from '@/app/(user)/post-offices/[id]/actions'
 import { GetStaticPropsContext } from 'next'
+import PostOfficesDetail from '@/components/PostOffices/PostOfficeDetail'
 
 
 const AddPostOffices = async (context: GetStaticPropsContext) => {
@@ -9,7 +10,7 @@ const AddPostOffices = async (context: GetStaticPropsContext) => {
 
   return (
     <>
-      <FormAddPostOffices formAddPostOffices={response} editAction={false}/>
+      <PostOfficesDetail formAddPostOffices={response} editAction={false}/>
     </>
   )
 }

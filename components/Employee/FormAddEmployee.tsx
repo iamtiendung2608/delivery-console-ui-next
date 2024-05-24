@@ -2,69 +2,48 @@
 
 import React, { FC, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { MapContainer, Marker, Popup, TileLayer, useMap } from 'react-leaflet'
-import MapComponent from '@/components/Map/map'
 import { useFormik } from 'formik'
-import { actionSubmitSignup } from '@/app/(auth)/signup/actions'
 import { toast, Toaster } from 'react-hot-toast'
 import * as Yup from 'yup'
 import LocationComponent from '@/components/Location/LocationComponent'
-import { actionAddCustomer } from '@/app/(user)/customers/add/actions'
-import { actionAddPostOffices } from '@/app/admin/post-offices/add/actions'
+import { actionAddEmployee } from '@/app/admin/employee/add/actions'
 
 
-export interface FormAddPostOffices{
+export interface FormAddEmployee{
   id: number
   name: string,
   phone: string,
   address: string,
-  longitude: string,
-  latitude: string,
-  sponsor: string,
-  sponsorPhone: string,
+  email: string,
   locationTagId: number
 }
 
-const getInitialValues = (formData?: FormAddPostOffices | null): FormAddPostOffices => {
+const getInitialValues = (formData?: FormAddEmployee | null): FormAddEmployee => {
   return formData ?? {
     id: 0,
     name: '',
     phone: '',
     address: '',
-    longitude: '105.77645438782932',
-    latitude: '21.003738403320312',
-    sponsor: '',
-    sponsorPhone: '',
+    email: '',
     locationTagId: 0
   };
 };
 
-const FormAddPostOffices: FC<{ formAddPostOffices: FormAddPostOffices | null, editAction: boolean}> = ({ formAddPostOffices, editAction }) => {
+const FormAddEmployee: FC<{ formAddEmployee: FormAddEmployee | null, editAction: boolean}> = ({ formAddEmployee, editAction }) => {
   const router = useRouter();
-  const response = getInitialValues(formAddPostOffices);
   const [locationId, setLocationId] = useState<number>(0);
 
-  const formik = useFormik<FormAddPostOffices>({
-    initialValues: getInitialValues(formAddPostOffices),
+  const formik = useFormik<FormAddEmployee>({
+    initialValues: getInitialValues(formAddEmployee),
     onSubmit: async (values, { resetForm }) => {
       values.locationTagId = locationId;
 
-      try {
-        const response = await actionAddPostOffices(values);
-        toast.success("Create Post Offices success");
-        router.push('/admin/post-offices');
-      } catch {
-        toast.error("Create Post Offices fail");
-        resetForm();
-      }
     },
     validationSchema: Yup.object({
       name: Yup.string().trim().required('Name is required'),
       phone: Yup.string().required('Phone is required'),
       address: Yup.string().required('Address is required'),
-      sponsor: Yup.string().required('Sponsor is required'),
-      sponsorPhone: Yup.string().required('Address is required'),
-      code: Yup.string().required('Address is required'),
+      email: Yup.string().required('Email is required'),
     }),
   });
 
@@ -76,11 +55,11 @@ const FormAddPostOffices: FC<{ formAddPostOffices: FormAddPostOffices | null, ed
     formik.values.locationTagId = locationId;
 
     try {
-      const response = await actionAddPostOffices(formik.values);
-      toast.success("Create Post Offices success");
-      router.push('/admin/post-offices');
+      const response = await actionAddEmployee(formik.values);
+      toast.success("Create employee success");
+      router.push('/admin/employee');
     } catch {
-      toast.error("Create Post Offices fail");
+      toast.error("Create employee fail");
       formik.resetForm();
     }
   };
@@ -92,8 +71,8 @@ const FormAddPostOffices: FC<{ formAddPostOffices: FormAddPostOffices | null, ed
       <form onSubmit={formik.handleSubmit}>
         <div className="space-y-12">
           <div className="border-b border-gray-900/10 pb-12">
-            <h2 className="text-base font-semibold leading-7 text-gray-900">Add post offices</h2>
-            <p className="mt-1 text-sm leading-6 text-gray-600">Where user can send/receive order</p>
+            <h2 className="text-base font-semibold leading-7 text-gray-900">Add Employee</h2>
+            <p className="mt-1 text-sm leading-6 text-gray-600">Delivery user</p>
             <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
               <div className="sm:col-span-3">
                 <label htmlFor="first-name" className="block text-sm font-medium leading-6 text-gray-900">
@@ -139,45 +118,25 @@ const FormAddPostOffices: FC<{ formAddPostOffices: FormAddPostOffices | null, ed
 
               <div className="sm:col-span-3">
                 <label htmlFor="first-name" className="block text-sm font-medium leading-6 text-gray-900">
-                  Sponsor
+                  Email
                 </label>
                 <div className="mt-2">
                   <input
-                    type="text"
-                    name="sponsor"
+                    type="email"
+                    name="email"
                     id="first-name"
                     autoComplete="given-name"
                     className="bg-white w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-                    value={formik.values.sponsor}
+                    value={formik.values.email}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                   />
-                  {formik.errors.sponsor && (
-                    <div className="text-danger">{formik.errors.sponsor}</div>
+                  {formik.errors.email && (
+                    <div className="text-danger">{formik.errors.email}</div>
                   )}
                 </div>
               </div>
 
-              <div className="sm:col-span-3">
-                <label htmlFor="last-name" className="block text-sm font-medium leading-6 text-gray-900">
-                  Sponsor Phone
-                </label>
-                <div className="mt-2">
-                  <input
-                    type="text"
-                    name="sponsorPhone"
-                    id="last-name"
-                    autoComplete="family-name"
-                    className="bg-white w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-                    value={formik.values.sponsorPhone}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                  />
-                </div>
-                {formik.errors.sponsorPhone && (
-                  <div className="text-danger">{formik.errors.sponsorPhone}</div>
-                )}
-              </div>
 
               <div className="col-span-full">
                 <label htmlFor="street-address" className="block text-sm font-medium leading-6 text-gray-900">
@@ -202,49 +161,6 @@ const FormAddPostOffices: FC<{ formAddPostOffices: FormAddPostOffices | null, ed
               <div className="col-span-full">
                 <LocationComponent onLocationChange={handleLocationChange} locationId={locationId} />
               </div>
-
-              <div className="sm:col-span-3">
-                <label htmlFor="first-name" className="block text-sm font-medium leading-6 text-gray-900">
-                  Latitude
-                </label>
-                <div className="mt-2">
-                  <input
-                    type="number"
-                    name="latitude"
-                    id="latitude"
-                    autoComplete="given-name"
-                    className="bg-white w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-                    value={formik.values.latitude}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                  />
-                  {formik.errors.latitude && (
-                    <div className="text-danger">{formik.errors.latitude}</div>
-                  )}
-                </div>
-              </div>
-
-              <div className="sm:col-span-3">
-                <label htmlFor="last-name" className="block text-sm font-medium leading-6 text-gray-900">
-                  Longitude
-                </label>
-                <div className="mt-2">
-                  <input
-                    type="number"
-                    name="longitude"
-                    id="longitude"
-                    autoComplete="family-name"
-                    className="bg-white w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-                    value={formik.values.longitude}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                  />
-                  {formik.errors.longitude && (
-                    <div className="text-danger">{formik.errors.longitude}</div>
-                  )}
-                </div>
-              </div>
-
               <div className="sm:col-span-3">
                 <button
                   className="flex justify-end rounded bg-primary py-2 px-6 font-medium text-gray hover:bg-opacity-95"
@@ -257,13 +173,10 @@ const FormAddPostOffices: FC<{ formAddPostOffices: FormAddPostOffices | null, ed
             </div>
           </div>
         </div>
-
       </form>
-      <MapComponent position={[Number(formik.values.latitude), Number(formik.values.longitude)]}
-                    name={formik.values.name} zoom={20} phone={formik.values.phone} />
     </>
   )
 }
 
 
-export default FormAddPostOffices;
+export default FormAddEmployee;
