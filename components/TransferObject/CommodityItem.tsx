@@ -91,7 +91,7 @@ const CommodityItem = ({ item, onChange, onRemove }: ItemProps) => {
             />
           </div>
           <div className="w-32 ml-8">
-            <label className="block text-black dark:text-white">Weight</label>
+            <label className="block text-black dark:text-white">Weight (g)</label>
             <input
               type="number"
               placeholder="Weight"
@@ -101,7 +101,7 @@ const CommodityItem = ({ item, onChange, onRemove }: ItemProps) => {
             />
           </div>
           <div className="w-40 ml-16">
-            <label className="block text-black dark:text-white">Price</label>
+            <label className="block text-black dark:text-white">Price (vnd)</label>
             <input
               type="number"
               placeholder="Item value"

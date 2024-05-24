@@ -2,9 +2,10 @@
 
 
 import Breadcrumb from '@/components/Breadcrumbs/Breadcrumb'
-import CommodityInformationComponent, {
+import {
   CreateOrderRequest,
-  DeliveryType, OrderStatus,
+  DeliveryType,
+  OrderStatus,
   PaidType
 } from '@/components/TransferObject/CommodityInformationComponent'
 import React, { FC, useState } from 'react'
@@ -134,8 +135,9 @@ const FormAddOrder: FC<{ id: number | null, editAction: boolean, customers : []}
   };
 
   // Calculate total weight and total value
-  const totalWeight = items.length > 1 ? items.reduce((total, item) => total + Number(item.weight), 0).toLocaleString() : '';
-  const totalValue = items.length > 1 ? items.reduce((total, item) => total + Number(item.price), 0).toLocaleString() : '';
+  const totalWeight = items.length > 0 ? items.reduce((total, item) => total + Number(item.weight), 0).toLocaleString() : '';
+  const totalValue = items.length > 0 ? items.reduce((total, item) => total + Number(item.price), 0).toLocaleString() : '';
+  const fee = items.length > 0 ? calculateFeePaid(Number(items.reduce((total, item) => total + Number(item.weight), 0)), formik.values.deliveryType) : 0;
 
   const handleSubmit = async () => {
     try {
@@ -372,7 +374,8 @@ const FormAddOrder: FC<{ id: number | null, editAction: boolean, customers : []}
               <div className="grid grid-cols-2">
                 <div className="mt-5 text-left">
                   {totalWeight && <p>Total Weight: {totalWeight}</p>}
-                  {totalValue && <p>Total Value: {totalValue}</p>}
+                  {totalValue && <p>Sub Total: {totalValue}</p>}
+                  {fee && <p>Ship Fee: {formatToVND(fee)}</p>}
                 </div>
                 <div className="mt-5 text-right">
                   <button
@@ -495,5 +498,22 @@ const FormAddOrder: FC<{ id: number | null, editAction: boolean, customers : []}
   )
 }
 
+function calculateFeePaid(totalWeight: number, type: DeliveryType) {
+  let baseFee = (type === DeliveryType.NORMAL ? 11000 : 15000);
 
+  if (totalWeight > 500) {
+    // Additional 10k for objects over 500g
+    baseFee += 10000;
+  }
+  if (totalWeight > 2000) {
+    // Additional 2k for each 0.5kg over 2000g
+    baseFee += Math.ceil((totalWeight - 2000) / 500) * 2000;
+  }
+  return baseFee;
+}
+
+
+function formatToVND(amount: number) {
+  return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
+}
 export default FormAddOrder;
