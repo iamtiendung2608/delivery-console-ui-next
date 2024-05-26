@@ -6,7 +6,7 @@ import { useFormik } from 'formik'
 import { toast, Toaster } from 'react-hot-toast'
 import * as Yup from 'yup'
 import LocationComponent from '@/components/Location/LocationComponent'
-import { actionAddEmployee } from '@/app/admin/employee/add/actions'
+import { actionAddEmployee, actionEditEmployee } from '@/app/admin/employee/add/actions'
 
 
 export interface FormAddEmployee{
@@ -54,13 +54,28 @@ const FormAddEmployee: FC<{ formAddEmployee: FormAddEmployee | null, editAction:
   const handleSubmit = async () => {
     formik.values.locationTagId = locationId;
 
-    try {
-      const response = await actionAddEmployee(formik.values);
-      toast.success("Create employee success");
-      router.push('/admin/employee');
-    } catch {
-      toast.error("Create employee fail");
-      formik.resetForm();
+    if (editAction) {
+
+      try {
+        const response = await actionEditEmployee(formik.values);
+        toast.success("Edit employee success");
+        router.push('/admin/employee');
+        router.refresh();
+      } catch {
+        toast.error("Edit employee fail");
+        formik.resetForm();
+      }
+
+    } else {
+      try {
+        const response = await actionAddEmployee(formik.values);
+        toast.success("Create employee success");
+        router.push('/admin/employee');
+        router.refresh();
+      } catch {
+        toast.error("Create employee fail");
+        formik.resetForm();
+      }
     }
   };
 
@@ -158,9 +173,11 @@ const FormAddEmployee: FC<{ formAddEmployee: FormAddEmployee | null, editAction:
                   )}
                 </div>
               </div>
-              <div className="col-span-full">
-                <LocationComponent onLocationChange={handleLocationChange} locationId={locationId} />
-              </div>
+              {!editAction && (
+                <div className="col-span-full">
+                  <LocationComponent onLocationChange={handleLocationChange} locationId={locationId} />
+                </div>
+              )}
               <div className="sm:col-span-3">
                 <button
                   className="flex justify-end rounded bg-primary py-2 px-6 font-medium text-gray hover:bg-opacity-95"

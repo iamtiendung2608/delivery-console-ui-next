@@ -1,6 +1,6 @@
 'use client';
 
-import { FC, useEffect, useState } from 'react'
+import React, { FC, useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useFormik } from 'formik'
 import Link from 'next/link'
@@ -170,9 +170,11 @@ const FormAddCustomer: FC<{ formAddCustomer: FormAddCustomerRequest, editAction:
                   )}
                 </div>
               </div>
-              <div className="col-span-full">
-                <LocationComponent onLocationChange={handleLocationChange} locationId={locationId} />
-              </div>
+              {!editAction && (
+                <div className="col-span-full">
+                  <LocationComponent onLocationChange={handleLocationChange} locationId={locationId} />
+                </div>
+              )}
             </div>
           </div>
         </div>

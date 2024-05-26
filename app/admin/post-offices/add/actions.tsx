@@ -27,8 +27,31 @@ export async function actionAddPostOffices(formData: FormAddPostOffices){
       Authorization: `Bearer ${accessToken?.value}`,
       'Content-Type': 'application/json',
     },
-    body: payload
+    body: JSON.stringify(payload)
   };
   const response = await fetchWithRetry(`${API_ENDPOINT}/admin/post-offices`, requestOptions);
+  return await response.status;
+}
+
+
+export async function actionEditPostOffices(formData: FormAddPostOffices){
+  const accessToken = await cookies().get("access_token");
+  const requestOptions: RequestInit = {
+    method: 'PUT', // Adjust the HTTP method as needed
+    headers: {
+      Authorization: `Bearer ${accessToken?.value}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      name: formData.name,
+      phone: formData.phone,
+      address: formData.address,
+      longitude: formData.longitude,
+      latitude: formData.latitude,
+      sponsor: formData.sponsor,
+      sponsorPhone: formData.sponsorPhone
+    })
+  }
+  const response = await fetchWithRetry(`${API_ENDPOINT}/admin/post-offices/${formData.id}`, requestOptions);
   return await response.status;
 }

@@ -10,7 +10,7 @@ import { toast, Toaster } from 'react-hot-toast'
 import * as Yup from 'yup'
 import LocationComponent from '@/components/Location/LocationComponent'
 import { actionAddCustomer } from '@/app/(user)/customers/add/actions'
-import { actionAddPostOffices } from '@/app/admin/post-offices/add/actions'
+import { actionAddPostOffices, actionEditPostOffices } from '@/app/admin/post-offices/add/actions'
 
 
 export interface FormAddPostOffices{
@@ -41,7 +41,6 @@ const getInitialValues = (formData?: FormAddPostOffices | null): FormAddPostOffi
 
 const FormAddPostOffices: FC<{ formAddPostOffices: FormAddPostOffices | null, editAction: boolean}> = ({ formAddPostOffices, editAction }) => {
   const router = useRouter();
-  const response = getInitialValues(formAddPostOffices);
   const [locationId, setLocationId] = useState<number>(0);
 
   const formik = useFormik<FormAddPostOffices>({
@@ -75,13 +74,24 @@ const FormAddPostOffices: FC<{ formAddPostOffices: FormAddPostOffices | null, ed
   const handleSubmit = async () => {
     formik.values.locationTagId = locationId;
 
-    try {
-      const response = await actionAddPostOffices(formik.values);
-      toast.success("Create Post Offices success");
-      router.push('/admin/post-offices');
-    } catch {
-      toast.error("Create Post Offices fail");
-      formik.resetForm();
+    if (editAction) {
+      try {
+        const response = await actionEditPostOffices(formik.values);
+        toast.success("Edit Post Offices success");
+        router.push('/admin/post-offices');
+      } catch {
+        toast.error("Edit Post Offices fail");
+        formik.resetForm();
+      }
+    } else {
+      try {
+        const response = await actionAddPostOffices(formik.values);
+        toast.success("Create Post Offices success");
+        router.push('/admin/post-offices');
+      } catch {
+        toast.error("Create Post Offices fail");
+        formik.resetForm();
+      }
     }
   };
 
@@ -199,10 +209,11 @@ const FormAddPostOffices: FC<{ formAddPostOffices: FormAddPostOffices | null, ed
                   )}
                 </div>
               </div>
-              <div className="col-span-full">
-                <LocationComponent onLocationChange={handleLocationChange} locationId={locationId} />
-              </div>
-
+              {!editAction && (
+                <div className="col-span-full">
+                  <LocationComponent onLocationChange={handleLocationChange} locationId={locationId} />
+                </div>
+              )}
               <div className="sm:col-span-3">
                 <label htmlFor="first-name" className="block text-sm font-medium leading-6 text-gray-900">
                   Latitude
