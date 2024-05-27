@@ -24,7 +24,7 @@ const VerifyComponent = () => {
         toast.success('Verification successful');
         const params = new URLSearchParams(searchParams);
         params.set('id', id);
-        window.location.href=`/confirm-signup?${params.toString()}`
+        router.push(`/confirm-signup?${params.toString()}`);
         router.refresh();
       } catch {
         setOtp('');
