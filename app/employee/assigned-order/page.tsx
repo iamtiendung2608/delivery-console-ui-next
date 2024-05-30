@@ -2,22 +2,17 @@ import Breadcrumb from '@/components/Breadcrumbs/Breadcrumb'
 import { Metadata } from 'next'
 import Link from 'next/link'
 import { Suspense } from 'react'
-import { fetchWithRetry } from '@/utils/api'
-import { API_ENDPOINT, DEFAULT_PAGE_SIZE } from '@/utils/contstants'
 import { format, formatDistanceToNow, parseISO } from 'date-fns'
 import Pagination from '@/app/_components/paging/Pagination'
-import { StatusToggle } from '@/components/PaymentMethods/StatusToggle'
-import { Button } from '@/app/_components/button'
-import { actionGetOrders } from '@/app/(user)/order/actions'
 import { actionGetOrdersEmployee } from '@/app/employee/assigned-order/actions'
-import PopupButton from '@/components/Employee/PopupButton'
+import { actionGetAssignedOrder } from '@/app/employee/order/actions'
 
 export const metadata: Metadata = {
   title: 'Order',
   description: 'This is Tables page for ...'
 }
 
-const OrderEmployeePage = async ({
+const AssignedOrderPage = async ({
   searchParams
 }: {
   searchParams?: {
@@ -28,7 +23,7 @@ const OrderEmployeePage = async ({
   const keyword = searchParams?.keyword || ''
   const currentPage = Number(searchParams?.page) - 1 || 0
 
-  const items = await actionGetOrdersEmployee(keyword, currentPage);
+  const items = await actionGetAssignedOrder(keyword, currentPage);
 
   return (
     <>
@@ -108,13 +103,11 @@ function Items({ items }: { items: any }) {
 
             <div className="hidden items-center justify-center p-2.5 sm:flex xl:p-5">
               <p className="text-meta-5">
-                {/*<Link className="inline-block" href={`/order/${item.id}`}>*/}
-                {/*  <button className="flex w-full justify-center rounded bg-primary px-2 py-1 font-medium text-gray">*/}
-                {/*    View Detail*/}
-                {/*  </button>*/}
-
-                {/*</Link>*/}
-                <PopupButton id={Number(item.id)} status={item.status} path='/employee/order' />
+                <Link className="inline-block" href={`/order/${item.id}`}>
+                  <button className="flex w-full justify-center rounded bg-primary px-2 py-1 font-medium text-gray">
+                    View Detail
+                  </button>
+                </Link>
               </p>
             </div>
           </div>
@@ -130,4 +123,4 @@ function Items({ items }: { items: any }) {
   )
 }
 
-export default OrderEmployeePage
+export default AssignedOrderPage

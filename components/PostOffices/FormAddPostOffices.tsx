@@ -15,6 +15,7 @@ import { actionAddPostOffices, actionEditPostOffices } from '@/app/admin/post-of
 
 export interface FormAddPostOffices{
   id: number
+  code: string
   name: string,
   phone: string,
   address: string,
@@ -28,6 +29,7 @@ export interface FormAddPostOffices{
 const getInitialValues = (formData?: FormAddPostOffices | null): FormAddPostOffices => {
   return formData ?? {
     id: 0,
+    code: '',
     name: '',
     phone: '',
     address: '',
@@ -63,7 +65,7 @@ const FormAddPostOffices: FC<{ formAddPostOffices: FormAddPostOffices | null, ed
       address: Yup.string().required('Address is required'),
       sponsor: Yup.string().required('Sponsor is required'),
       sponsorPhone: Yup.string().required('Address is required'),
-      code: Yup.string().required('Address is required'),
+      code: Yup.string().required('code is required'),
     }),
   });
 
@@ -187,6 +189,28 @@ const FormAddPostOffices: FC<{ formAddPostOffices: FormAddPostOffices | null, ed
                 {formik.errors.sponsorPhone && (
                   <div className="text-danger">{formik.errors.sponsorPhone}</div>
                 )}
+              </div>
+
+              <div className="sm:col-span-3">
+                <label htmlFor="first-name" className="block text-sm font-medium leading-6 text-gray-900">
+                  Code
+                </label>
+                <div className="mt-2">
+                  <input
+                    type="text"
+                    name="code"
+                    id="code"
+                    autoComplete="given-name"
+                    className="bg-white w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                    value={formik.values.code}
+                    onChange={formik.handleChange}
+                    maxLength={8}
+                    onBlur={formik.handleBlur}
+                  />
+                  {formik.errors.code && (
+                    <div className="text-danger">{formik.errors.code}</div>
+                  )}
+                </div>
               </div>
 
               <div className="col-span-full">

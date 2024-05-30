@@ -17,7 +17,6 @@ const AdminPostOfficesPage = async ({searchParams}: {
   const keyword = searchParams?.keyword || '';
   const currentPage = Number(searchParams?.page) - 1 || 0;
   const response = await actionGetAdminPostOffices(keyword, currentPage);
-  console.log(response)
   return (
     <>
       <div className="px-4 sm:px-6 lg:px-8">
