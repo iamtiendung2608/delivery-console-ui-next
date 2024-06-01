@@ -1,6 +1,8 @@
 import ECommerce from '@/components/Dashboard/E-commerce'
 import { Metadata } from 'next'
 import { useRouter } from 'next/navigation'
+import getRole from '@/app/actions'
+import { useState } from 'react';
 
 export const metadata: Metadata = {
   title: 'TailAdmin | Next.js E-commerce Dashboard Template',
@@ -8,11 +10,12 @@ export const metadata: Metadata = {
   // other metadata
 }
 
-export default function Home() {
+export default async function Home() {
 
+  const role = await getRole();
   return (
     <div>
-      <ECommerce />
+      <ECommerce role={role} />
     </div>
-  )
+  );
 }
