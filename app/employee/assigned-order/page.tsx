@@ -6,6 +6,7 @@ import { format, formatDistanceToNow, parseISO } from 'date-fns'
 import Pagination from '@/app/_components/paging/Pagination'
 import { actionGetOrdersEmployee } from '@/app/employee/assigned-order/actions'
 import { actionGetAssignedOrder } from '@/app/employee/order/actions'
+import PopupButton from '@/components/Employee/PopupButton'
 
 export const metadata: Metadata = {
   title: 'Order',
@@ -103,11 +104,7 @@ function Items({ items }: { items: any }) {
 
             <div className="hidden items-center justify-center p-2.5 sm:flex xl:p-5">
               <p className="text-meta-5">
-                <Link className="inline-block" href={`/order/${item.id}`}>
-                  <button className="flex w-full justify-center rounded bg-primary px-2 py-1 font-medium text-gray">
-                    View Detail
-                  </button>
-                </Link>
+                <PopupButton id={Number(item.id)} status={item.status} path='/employee/order' />
               </p>
             </div>
           </div>
