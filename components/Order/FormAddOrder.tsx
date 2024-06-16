@@ -8,7 +8,7 @@ import {
   OrderStatus,
   PaidType
 } from '@/components/TransferObject/CommodityInformationComponent'
-import React, { FC, useState } from 'react'
+import React, { FC, useEffect, useState } from 'react'
 import { useFormik } from 'formik'
 import { actionAddOrder, actionAddTransferObject } from '@/app/(user)/order/single-form/add/actions'
 import * as Yup from 'yup'
@@ -20,6 +20,8 @@ import CommodityItem, { Item, ItemCategory } from '@/components/TransferObject/C
 import { useRouter } from 'next/navigation'
 import { toast } from 'react-toastify'
 import { Toaster } from 'react-hot-toast'
+import { actionGetPostOfficesWithSize } from '@/app/(user)/post-offices/actions'
+import Select from 'react-select'
 
 const getInitialTransferObject = (formData?: TransferObjectRequest | null): TransferObjectRequest => {
   return formData ?? {
@@ -38,7 +40,7 @@ export interface TransferObjectRequest {
   receiveShift: ReceiveShift,
   customerId: number,
   postOfficeId: number | null,
-  actionDate: string
+  actionDate: string,
 }
 
 export interface TransferObjectResponse {
@@ -73,6 +75,27 @@ const FormAddOrder: FC<{ id: number | null, editAction: boolean, customers : []}
   const [senderObject, setSenderObject] = useState<TransferObjectRequest>();
   const [receiverObject, setReceiverObject] = useState<TransferObjectRequest>();
   const router = useRouter();
+  const [offices, setOffices] = useState([]);
+
+
+  const fetchPostOffices = async (searchTerm) => {
+    try {
+      const response = await actionGetPostOfficesWithSize(searchTerm, 0);
+      const data = await response;
+      setOffices(data.content);
+    } catch (error) {
+      console.error('Error fetching provinces:', error);
+    } finally {
+    }
+  };
+
+  const handleSearchInputChange = (event, value) => {
+    fetchPostOffices(value);
+  };
+
+  useEffect( () => {
+    fetchPostOffices('');
+  }, []);
 
   const senderFormik= useFormik<TransferObjectRequest>({
     initialValues: getInitialTransferObject(senderObject),
@@ -214,6 +237,18 @@ const FormAddOrder: FC<{ id: number | null, editAction: boolean, customers : []}
                   <CheckboxTwo onChange={e => senderFormik.setFieldValue('atOfficeFlg', e)} name="Send at post offices" />
                 </div>
 
+                {senderFormik.values.atOfficeFlg && (
+                  <div className="mt-2">
+                    <Select
+                      className="relative z-20 w-full appearance-none border-stroke bg-transparent py-2 px-5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                      options={offices}
+                      getOptionLabel={(option) => option.name}
+                      onChange={e => senderFormik.setFieldValue('postOfficeId', e.id)}
+                      onInputChange={handleSearchInputChange} // Triggered as the user types
+                    />
+                  </div>
+                )}
+
                 <div className="mb-2">
                   <label className="mb-3 block font-medium text-black dark:text-white">Send Shift</label>
                   <SelectComponent isMulti={false} value={senderFormik.values.receiveShift} options={ReceiveShift}
@@ -291,13 +326,26 @@ const FormAddOrder: FC<{ id: number | null, editAction: boolean, customers : []}
               <div className="flex flex-col gap-5.5 p-6.5">
 
                 <div className="mt-2">
-                  <CheckboxTwo onChange={e => receiverFormik.setFieldValue('atOfficeFlg', e)} name="Recieve at post offices" />
+                  <CheckboxTwo onChange={e => receiverFormik.setFieldValue('atOfficeFlg', e)}
+                               name="Recieve at post offices" />
                 </div>
+
+                {receiverFormik.values.atOfficeFlg && (
+                  <div className="mt-2">
+                    <Select
+                      className="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent py-2 px-5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                      options={offices}
+                      getOptionLabel={(option) => option.name}
+                      onChange={e => receiverFormik.setFieldValue('postOfficeId', e.id)}
+                      onInputChange={handleSearchInputChange} // Triggered as the user types
+                    />
+                  </div>
+                )}
 
                 <div className="mt-2">
                   <label className="mb-3 block font-medium text-black dark:text-white">Receive Shift</label>
                   <SelectComponent isMulti={false} value={receiverFormik.values.receiveShift} options={ReceiveShift}
-                                   className=''
+                                   className=""
                                    onChange={(e) => receiverFormik.setFieldValue('receiveShift', e)} />
                 </div>
 
@@ -305,7 +353,7 @@ const FormAddOrder: FC<{ id: number | null, editAction: boolean, customers : []}
                   <label className="mb-3 block font-medium text-black dark:text-white">Select receiver
                     information</label>
                   <CustomerSelectComponent isMulti={false} value={receiverFormik.values.customerId} options={customers}
-                                           className=''
+                                           className=""
                                            onChange={(e) => receiverFormik.setFieldValue('customerId', e)} />
                 </div>
               </div>

@@ -35,7 +35,6 @@ const ECommerce: React.FC<ECommerceProps> = ({ role }) => {
   const [metric, setMetric] = useState<MetricAdminResponse | null>();
   const [userMetric, setUserMetric] = useState<MetricUserResponse | null>();
 
-
   useEffect(() => {
     if (role) {
       (async () => {

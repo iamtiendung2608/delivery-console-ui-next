@@ -8,8 +8,6 @@ import { Toaster } from 'react-hot-toast';
 import { actionCreateTransaction } from '@/app/employee/order/actions'
 import { useRouter } from 'next/navigation'
 import { toast } from 'react-toastify'
-import { Autocomplete, TextField, CircularProgress, Grid } from '@mui/material';
-import { actionGetLocationTag, actionGetLocationTagDetail } from '@/app/(user)/customers/add/actions'
 import { actionGetPostOfficesWithSize } from '@/app/(user)/post-offices/actions'
 import Select from 'react-select';
 
