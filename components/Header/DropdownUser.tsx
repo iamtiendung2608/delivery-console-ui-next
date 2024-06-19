@@ -4,12 +4,19 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { clearCookies } from '@/utils/api'
 import { useRouter } from 'next/navigation'
+import { actionGetCurrentUser } from '@/app/(auth)/signin/actions'
+
+export interface CurrentUser {
+  email: string,
+  fullName: string
+}
 
 const DropdownUser = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const router = useRouter();
   const trigger = useRef<any>(null)
   const dropdown = useRef<any>(null)
+  const [currentUser, setCurrentUser] = useState<CurrentUser>();
 
   // close on click outside
   useEffect(() => {
@@ -21,6 +28,13 @@ const DropdownUser = () => {
     document.addEventListener('click', clickHandler)
     return () => document.removeEventListener('click', clickHandler)
   })
+
+  useEffect(() => {
+    ;(async () => {
+      const response = await actionGetCurrentUser();
+      setCurrentUser(response);
+    })()
+  }, [])
 
   // close if the esc key is pressed
   useEffect(() => {
@@ -42,8 +56,8 @@ const DropdownUser = () => {
     <div className='relative'>
       <Link ref={trigger} onClick={() => setDropdownOpen(!dropdownOpen)} className='flex items-center gap-4' href='#'>
         <span className='hidden text-right lg:block'>
-          <span className='block text-sm font-medium text-black dark:text-white'>Thomas Anree</span>
-          <span className='block text-xs'>UX Designer</span>
+          <span className='block text-sm font-medium text-black dark:text-white'>{currentUser?.fullName}</span>
+          <span className='block text-xs'>{currentUser?.email}</span>
         </span>
 
         <span className='h-12 w-12 rounded-full'>

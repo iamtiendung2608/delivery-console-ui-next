@@ -1,12 +1,19 @@
 'use client';
 
 import PagingButton from '@/app/_components/paging/PagingButton'
-import { useSearchParams } from 'next/navigation'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { DEFAULT_PAGE_SIZE } from '@/utils/contstants'
+
+export enum ButtonType {
+  INCREASE, DECREASE
+}
 
 export default function Pagination({ totalPages }: { totalPages: number }) {
   const searchParams = useSearchParams();
   const currentPage = Number(searchParams.get('page')) || 1;
+  const { replace } = useRouter();
+  const pathname = usePathname();
+
   const renderPageButtons = () => {
     let pages = [];
     const divideElement = totalPages / DEFAULT_PAGE_SIZE ;
@@ -41,10 +48,23 @@ export default function Pagination({ totalPages }: { totalPages: number }) {
     return pages;
   };
 
+  const updateCurrentPage = (type: ButtonType) => {
+    let nextPage = currentPage;
+    if (type === ButtonType.INCREASE && currentPage < totalPages) {
+      nextPage++;
+    } else if (type === ButtonType.DECREASE && currentPage > 1) {
+      nextPage--;
+    }
+    // Update the state or perform any necessary navigation
+    const params = new URLSearchParams(searchParams);
+    params.set('page', nextPage.toString());
+    replace(`${pathname}?${params.toString()}`);
+  };
+
   return (
     <nav className="isolate inline-flex -space-x-px rounded-md shadow-sm" aria-label="Pagination">
       {/* Previous Button */}
-      <button
+      <button onClick={(e) => updateCurrentPage(ButtonType.DECREASE)}
          className="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0">
         <span className="sr-only">Previous</span>
         <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -58,7 +78,7 @@ export default function Pagination({ totalPages }: { totalPages: number }) {
       {renderPageButtons()}
 
       {/* Next Button */}
-      <button
+      <button onClick={(e) => updateCurrentPage(ButtonType.INCREASE)}
          className="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0">
         <span className="sr-only">Next</span>
         <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">

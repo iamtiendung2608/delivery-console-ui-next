@@ -1,6 +1,8 @@
 'use server'
 import { fetchWithRetry } from "@/utils/api";
 import { API_ENDPOINT } from '@/utils/contstants';
+import { CurrentUser } from '@/components/Header/DropdownUser'
+import { cookies } from 'next/headers'
 
 
 interface SignInFormResponse {
@@ -27,4 +29,19 @@ export async function actionSubmitSignin(body : SignInFormRequest): Promise<Sign
   })
   const data = await response.json();
   return { message: 'Signin successful.', error: false, status: response.status, accessToken: data.accessToken, roleCode: data.roleCode }
+}
+
+
+
+export async function actionGetCurrentUser(): Promise<CurrentUser> {
+  const accessToken = await cookies().get("access_token");
+  const requestOptions: RequestInit = {
+    method: 'GET', // Adjust the HTTP method as needed
+    headers: {
+      Authorization: `Bearer ${accessToken?.value}`,
+      'Content-Type': 'application/json',
+    },
+  };
+  const response = await fetch(`${API_ENDPOINT}/auth/me`, requestOptions);
+  return await response.json();
 }
