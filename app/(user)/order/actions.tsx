@@ -15,6 +15,6 @@ export async function actionGetOrders(keyword: string, pageNumber: number): Prom
     },
   };
 
-  const response = await fetch(`${API_ENDPOINT}/order?page=${pageNumber}&size=${DEFAULT_PAGE_SIZE}`, requestOptions);
+  const response = await fetch(`${API_ENDPOINT}/order?page=${pageNumber}&size=${DEFAULT_PAGE_SIZE}&keyword=${keyword}`, requestOptions);
   return await response.json();
 }
