@@ -11,7 +11,7 @@ import { Button } from '@/app/_components/button'
 import { actionGetOrders } from '@/app/(user)/order/actions'
 
 export const metadata: Metadata = {
-  title: 'Customer',
+  title: 'Orders',
   description: 'This is Tables page for ...'
 }
 
@@ -34,7 +34,7 @@ const OrderPage = async ({
 
   return (
     <>
-      <Breadcrumb pageName='Customers' fullPageName='' />
+      <Breadcrumb pageName='Orders' fullPageName='' />
       <div className='flex flex-col gap-10'>
         <div className='rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1'>
           <div className='flex flex-col'>

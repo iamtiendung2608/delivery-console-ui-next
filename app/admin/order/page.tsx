@@ -6,7 +6,7 @@ import { actionGetOrders } from '@/app/(user)/order/actions'
 import { actionGetAdminOrders } from '@/app/admin/order/actions'
 import { formatDistanceToNow } from 'date-fns'
 export const metadata: Metadata = {
-  title: 'Customer',
+  title: 'Orders',
   description: 'This is Tables page for ...'
 }
 

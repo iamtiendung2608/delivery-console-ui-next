@@ -10,6 +10,7 @@ import * as Yup from 'yup';
 import { actionSubmitSignin } from '@/app/(auth)/signin/actions'
 import { setCookiesHeader, setRoleHeader } from '@/utils/api'
 import { toast } from 'react-toastify'
+import { Toaster } from 'react-hot-toast'
 
 
 interface SignInFormRequest {
@@ -30,7 +31,11 @@ const SigninComponent: FC<SignInFormRequest> = ({ email, password}) => {
         if (response.status === 200) {
           await setCookiesHeader(response.accessToken);
           await setRoleHeader(response.roleCode);
-          window.location.href = '/';
+          if (response.roleCode === 'employee') {
+            window.location.href = '/post-offices';
+          } else {
+            window.location.href = '/';
+          }
         } else {
           toast.error('Signin failed!');
         }
@@ -38,18 +43,25 @@ const SigninComponent: FC<SignInFormRequest> = ({ email, password}) => {
         console.error('Signin error:', error);
         toast.error('An error occurred during signin.');
       } finally {
+        toast.error('Username or password incorrect!');
         resetForm();
       }
     },
     validationSchema: Yup.object({
       email: Yup.string().email('Must be a valid email').required('Email is required'),
-      password: Yup.string().required('Password is required'),
-    })
+      password: Yup.string()
+        .required('Password is required')
+        .min(8, 'Password must be at least 8 characters long'), // Minimum 9 characters for password
+    }),
   });
 
   return (
     <>
         <div className='rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark'>
+          <Toaster
+            position="top-center"
+            reverseOrder={false}
+          />
           <div className='flex flex-wrap items-center'>
             <div className='hidden w-full xl:block xl:w-1/2'>
               <div className='py-17.5 px-26 text-center'>

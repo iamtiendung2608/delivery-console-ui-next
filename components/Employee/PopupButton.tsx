@@ -71,14 +71,17 @@ const PopupButton: FC<{ id: number; status: TransactionStatus, path: string }> =
   };
 
   const filteredOptions = Object.entries(TransactionStatus)
-    .filter(([key, value]) => parseInt(key) >= Number(TransactionStatus[status]) && value !== status)
+    .filter(([key, value]) => {
+      return parseInt(key) >= Number(TransactionStatus[status]) && value !== status;
+    })
     .map(([key, value]) => ({ key: parseInt(key), value }));
+
 
   return (
     <>
       <Toaster />
       <button className="flex w-full justify-center rounded bg-primary px-2 py-1 font-medium text-gray" onClick={togglePopup}>
-        Open Popup
+        Update Status
       </button>
       <Popup closeOnDocumentClick className="border-primary rounded" open={isOpen} onClose={togglePopup} position="right center">
         <div>

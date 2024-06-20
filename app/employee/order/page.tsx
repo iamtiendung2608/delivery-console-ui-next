@@ -32,11 +32,11 @@ const OrderEmployeePage = async ({
 
   return (
     <>
-      <Breadcrumb pageName='Customers' fullPageName='' />
+      <Breadcrumb pageName='Orders' fullPageName='' />
       <div className='flex flex-col gap-10'>
         <div className='rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1'>
           <div className='flex flex-col'>
-            <div className="grid grid-cols-7 rounded-sm bg-gray-2 dark:bg-meta-4 sm:grid-cols-7">
+            <div className="grid grid-cols-8 rounded-sm bg-gray-2 dark:bg-meta-4 sm:grid-cols-8">
               <div className="p-2.5 xl:p-5">
                 <h5 className="text-sm font-medium uppercase xsm:text-base">ID</h5>
               </div>
@@ -75,7 +75,7 @@ function Items({ items }: { items: any }) {
       {items &&
         (items?.content || []).map((item: any, index: number) => (
           <div
-            className={`grid grid-cols-7 sm:grid-cols-7 ${
+            className={`grid grid-cols-8 sm:grid-cols-8 ${
               item?.id === items?.totalElements - 1 ? '' : 'border-b border-stroke dark:border-strokedark'
             }`}
             key={index}
@@ -105,7 +105,15 @@ function Items({ items }: { items: any }) {
                 {formatDistanceToNow(new Date(item.createdAt), { addSuffix: true })}
               </p>
             </div>
-
+            <div className="hidden items-center justify-center p-2.5 sm:flex xl:p-5">
+              <p className="text-meta-5">
+                <Link className="inline-block" href={`/order/${item.id}`}>
+                  <button className="flex w-full justify-center rounded bg-graydark px-2 py-1 font-medium text-gray">
+                    View Detail
+                  </button>
+                </Link>
+              </p>
+            </div>
             <div className="hidden items-center justify-center p-2.5 sm:flex xl:p-5">
               <p className="text-meta-5">
                 {/*<Link className="inline-block" href={`/order/${item.id}`}>*/}
@@ -117,6 +125,7 @@ function Items({ items }: { items: any }) {
                 <PopupButton id={Number(item.id)} status={item.status} path='/employee/order' />
               </p>
             </div>
+
           </div>
         ))}
       <div className="grid grid-cols-2">

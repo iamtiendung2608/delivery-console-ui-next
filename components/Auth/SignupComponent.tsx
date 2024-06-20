@@ -45,9 +45,9 @@ const SignupComponent: FC<SignUpFormRequest> = ({ email, password, retypePasswor
     validationSchema: Yup.object({
       fullName: Yup.string().trim().required('Name is required'),
       email: Yup.string().email('Must be a valid email').required('Email is required'),
-      password: Yup.string().required('Password is required'),
+      password: Yup.string().required('Password is required').min(8, 'Password must be at least 8 characters long'),
       retypePassword: Yup.string()
-        .oneOf([Yup.ref('password'), ''], 'Passwords must match')
+        .oneOf([Yup.ref('password'), ''], 'Retype Password must match')
         .required('Retype Password is required'),
     }),
   });
