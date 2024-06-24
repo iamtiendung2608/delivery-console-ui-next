@@ -238,15 +238,19 @@ const FormAddOrder: FC<{ id: number | null, editAction: boolean, customers : []}
                 </div>
 
                 {senderFormik.values.atOfficeFlg && (
-                  <div className="mt-2">
                     <Select
                       className="relative z-20 w-full appearance-none border-stroke bg-transparent py-2 px-5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                       options={offices}
                       getOptionLabel={(option) => option.name}
                       onChange={e => senderFormik.setFieldValue('postOfficeId', e.id)}
                       onInputChange={handleSearchInputChange} // Triggered as the user types
+                      styles={{
+                        control: (provided) => ({
+                          ...provided,
+                          minHeight: '38px', // Adjusting minimum height if necessary
+                        }),
+                      }}
                     />
-                  </div>
                 )}
 
                 <div className="mb-2">
@@ -331,15 +335,19 @@ const FormAddOrder: FC<{ id: number | null, editAction: boolean, customers : []}
                 </div>
 
                 {receiverFormik.values.atOfficeFlg && (
-                  <div className="mt-2">
                     <Select
-                      className="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent py-2 px-5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                      className="relative z-20 w-full appearance-none bg-transparent py-2 px-5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                       options={offices}
                       getOptionLabel={(option) => option.name}
                       onChange={e => receiverFormik.setFieldValue('postOfficeId', e.id)}
                       onInputChange={handleSearchInputChange} // Triggered as the user types
+                      styles={{
+                        control: (provided) => ({
+                          ...provided,
+                          minHeight: '38px', // Adjusting minimum height if necessary
+                        }),
+                      }}
                     />
-                  </div>
                 )}
 
                 <div className="mt-2">

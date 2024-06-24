@@ -15,7 +15,7 @@ export enum TransactionStatus {
   CREATED = 0,
   RECEIVED = 1,
   TRANSPORTING = 2,
-  TRANSPORTED = 2,
+  TRANSPORTED = 2.4,
   DELIVERING = 3,
   DELIVERED = 4,
 }
@@ -72,7 +72,7 @@ const PopupButton: FC<{ id: number; status: TransactionStatus, path: string }> =
 
   const filteredOptions = Object.entries(TransactionStatus)
     .filter(([key, value]) => {
-      return parseInt(key) >= Number(TransactionStatus[status]) && value !== status;
+      return parseInt(key) >= Math.round(Number(TransactionStatus[status])) && value !== status;
     })
     .map(([key, value]) => ({ key: parseInt(key), value }));
 
@@ -113,15 +113,19 @@ const PopupButton: FC<{ id: number; status: TransactionStatus, path: string }> =
               <label htmlFor="post-offices" className="block text-sm font-medium leading-6 text-gray-900">
                 Post Offices
               </label>
-              <div className="mt-2">
                 <Select
-                  className='relative z-20 w-full appearance-none rounded border border-stroke bg-transparent py-2 px-5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary'
+                  className='relative z-20 w-full appearance-none bg-transparent py-2 px-5 outline-none transition focus:border-primary active:border-primary gray:border-form-strokedark gray:bg-form-input gray:focus:border-primary'
                   options={offices}
                   getOptionLabel={(option) => option.name}
                   onChange={(value) => setOfficesId(value.id)}
                   onInputChange={handleSearchInputChange} // Triggered as the user types
+                  styles={{
+                    control: (provided) => ({
+                      ...provided,
+                      minHeight: '57px', // Adjusting minimum height if necessary
+                    }),
+                  }}
                 />
-              </div>
             </div>
 
             <div className="col-span-full">

@@ -1,8 +1,12 @@
 'use client';
 
-import { FC, useEffect, useState } from 'react'
+import React, { FC, useEffect, useState } from 'react'
 
-import { actionGetOrderDetail, actionGetOrderTransaction } from '@/app/(user)/order/[id]/actions'
+import {
+  actionGetOrderDetail,
+  actionGetOrderLocation,
+  actionGetOrderTransaction
+} from '@/app/(user)/order/[id]/actions'
 import { TransferObjectRequest } from '@/components/Order/FormAddOrder'
 import TransactionComponent from '@/components/Order/TransactionComponent'
 import { Dialog, Listbox, Menu, Transition } from '@headlessui/react'
@@ -22,23 +26,30 @@ import {
 } from '@heroicons/react/20/solid'
 import { BellIcon, XMarkIcon as XMarkIconOutline } from '@heroicons/react/24/outline'
 import { CheckCircleIcon } from '@heroicons/react/24/solid'
+import Image from 'next/image'
 
 
 function classNames(...classes: any[]) {
   return classes.filter(Boolean).join(' ')
 }
 
-
+export interface OrderLocationResponse {
+  id: number,
+  location: string,
+  currentOwner: string
+}
 
 const OrderDetailComponent: FC<{ id: string }> = ({ id }) => {
 
   const [order, setOrder] = useState(null);
   const [transactions, setTransactions] = useState<TransferObjectRequest[]>([]);
+  const [currentLocation, setCurrentLocation] = useState<OrderLocationResponse>(null);
 
   useEffect(() => {
     if (id) {
       ;(async () => {
         setOrder(await actionGetOrderDetail(id));
+        setCurrentLocation(await actionGetOrderLocation(id));
         setTransactions(await actionGetOrderTransaction(id));
       })()
     }
@@ -67,7 +78,8 @@ const OrderDetailComponent: FC<{ id: string }> = ({ id }) => {
                   </div>
                   <div className="flex-none self-end px-6 pt-4">
                     <dt className="sr-only">Status</dt>
-                    <dd className="rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-600 ring-1 ring-inset ring-green-600/20">
+                    <dd
+                      className="rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-600 ring-1 ring-inset ring-green-600/20">
                       Paid
                     </dd>
                   </div>
@@ -76,7 +88,8 @@ const OrderDetailComponent: FC<{ id: string }> = ({ id }) => {
                       <span className="sr-only">Client</span>
                       <UserCircleIcon className="h-6 w-5 text-gray-400" aria-hidden="true" />
                     </dt>
-                    <dd className="text-sm font-medium leading-6 text-gray-500">Delivery type: {order?.deliveryType}</dd>
+                    <dd className="text-sm font-medium leading-6 text-gray-500">Delivery
+                      type: {order?.deliveryType}</dd>
                   </div>
 
                   <div className="mt-4 flex w-full flex-none gap-x-4 px-6 mb-4">
@@ -86,13 +99,31 @@ const OrderDetailComponent: FC<{ id: string }> = ({ id }) => {
                     </dt>
                     <dd className="text-sm leading-6 text-gray-500">Paid by {order?.paidType}</dd>
                   </div>
+
+                  <div className=" flex w-full flex-none gap-x-4 px-5 mb-4">
+                    <dt className="flex-none">
+                      <span className="sr-only">Status</span>
+                      <Image src="/images/icon/map_icon.svg" alt="Data Icon" width={24} height={24} />
+                    </dt>
+                    <dd className="text-sm leading-6 text-gray-500">Current Location: {currentLocation?.location}</dd>
+                  </div>
+
+                  <div className=" flex w-full flex-none gap-x-4 px-5 mb-4">
+                    <dt className="flex-none">
+                      <span className="sr-only">Status</span>
+                      <Image src="/images/icon/in_charge.svg" alt="Data Icon" width={24} height={24} />
+                    </dt>
+                    <dd className="text-sm leading-6 text-gray-500">Supervisor: {currentLocation?.currentOwner}</dd>
+                  </div>
+
                 </dl>
               </div>
             </div>
 
             {/* Invoice */}
-            <div className="-mx-4 px-4 py-8 shadow-sm ring-1 ring-gray-900/5 sm:mx-0 sm:rounded-lg sm:px-8 sm:pb-14 lg:col-span-2 lg:row-span-2 lg:row-end-2 xl:px-16 xl:pb-20 xl:pt-16 bg-white">
-              <h2 className="text-base font-semibold leading-6 text-gray-900">Invoice</h2>
+            <div
+              className="-mx-4 px-4 py-8 shadow-sm ring-1 ring-gray-900/5 sm:mx-0 sm:rounded-lg sm:px-8 sm:pb-14 lg:col-span-2 lg:row-span-2 lg:row-end-2 xl:px-16 xl:pb-20 xl:pt-16 bg-white">
+              <h2 className="text-base font-semibold leading-6 text-gray-900">Order Summary</h2>
               <dl className="mt-6 grid grid-cols-1 text-sm leading-6 sm:grid-cols-2">
                 <div className="sm:pr-4">
                   <dt className="inline text-gray-500">Created At</dt>{' '}
@@ -259,7 +290,7 @@ const OrderDetailComponent: FC<{ id: string }> = ({ id }) => {
                         </div>
                         <p className="flex-auto py-0.5 text-xs leading-5 text-gray-500">
                           <span className="font-medium text-gray-900">
-                            {activityItem.employee ? `${activityItem.employee.name} ${activityItem.status} the invoice.` : 'ORDER CREATED'}
+                            {activityItem.employee ? `${activityItem.employee.name} ${activityItem.status} the order.` : `${activityItem.status}`}
                           </span>{' '}
                         </p>
                       </>
