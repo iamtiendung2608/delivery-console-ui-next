@@ -70,7 +70,10 @@ const AdminPostOfficesPage = async ({searchParams}: {
                       </td>
                       <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{item.status}</td>
                       <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{item.totalWeight} (g)</td>
-                      <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{item.totalPrice} (vnd)</td>
+                      <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{item?.totalPrice.toLocaleString('vi-VN', {
+                        style: 'currency',
+                        currency: 'VND'
+                      })}</td>
                       <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{item.deliveryType}</td>
                       <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                         {formatDistanceToNow(new Date(item.createdAt), { addSuffix: true })}

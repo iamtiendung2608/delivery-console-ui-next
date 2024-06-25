@@ -89,7 +89,10 @@ function Items({ items }: { items: any }) {
             </div>
 
             <div className="hidden items-center justify-center p-2.5 sm:flex xl:p-5">
-              <p className="text-black dark:text-white">{item.totalPrice}</p>
+              <p className="text-black dark:text-white">{item?.totalPrice.toLocaleString('vi-VN', {
+                style: 'currency',
+                currency: 'VND'
+              })}</p>
             </div>
 
             <div className="hidden items-center justify-center p-2.5 sm:flex xl:p-5">
