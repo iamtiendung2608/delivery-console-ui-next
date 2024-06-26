@@ -18,7 +18,8 @@ import SelectComponent from '@/components/Select/SelectComponent'
 import CustomerSelectComponent from '@/components/Customers/SelectCustomerComponent'
 import CommodityItem, { Item, ItemCategory } from '@/components/TransferObject/CommodityItem'
 import { useRouter } from 'next/navigation'
-import { toast } from 'react-toastify'
+import { toast, ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 import { Toaster } from 'react-hot-toast'
 import { actionGetPostOfficesWithSize } from '@/app/(user)/post-offices/actions'
 import Select from 'react-select'
@@ -76,7 +77,6 @@ const FormAddOrder: FC<{ id: number | null, editAction: boolean, customers : []}
   const [receiverObject, setReceiverObject] = useState<TransferObjectRequest>();
   const router = useRouter();
   const [offices, setOffices] = useState([]);
-
 
   const fetchPostOffices = async (searchTerm) => {
     try {
@@ -159,7 +159,7 @@ const FormAddOrder: FC<{ id: number | null, editAction: boolean, customers : []}
 
   // Calculate total weight and total value
   const totalWeight = items.length > 0 ? items.reduce((total, item) => total + Number(item.weight), 0).toLocaleString() : '';
-  const totalValue = items.length > 0 ? items.reduce((total, item) => total + Number(item.price), 0).toLocaleString() : '';
+  const totalValue = items.length > 0 ? items.reduce((total, item) => total + Number(item.price), 0) : 0;
   const fee = items.length > 0 ? calculateFeePaid(Number(items.reduce((total, item) => total + Number(item.weight), 0)), formik.values.deliveryType) : 0;
 
   const handleSubmit = async () => {
@@ -173,15 +173,15 @@ const FormAddOrder: FC<{ id: number | null, editAction: boolean, customers : []}
 
       console.log(response);
       if (!response.error) {
-        toast.success('Create order success');
         router.push(`/order`);
         router.refresh();
+        toast.success('Create order success');
       } else {
-        toast.error('Create order fail');
         return;
       }
 
     } catch (error) {
+      toast.error('Create order fail');
       console.error("An error occurred while submitting the form:", error);
     }
   };
@@ -429,8 +429,8 @@ const FormAddOrder: FC<{ id: number | null, editAction: boolean, customers : []}
               ))}
               <div className="grid grid-cols-2">
                 <div className="mt-5 text-left">
-                  {totalWeight && <p>Total Weight: {totalWeight}</p>}
-                  {totalValue && <p>Sub Total: {totalValue}</p>}
+                  {totalWeight && <p>Total Weight: {totalWeight}g</p>}
+                  {totalValue && <p>Sub Total: {formatToVND(totalValue)}</p>}
                   {fee && <p>Ship Fee: {formatToVND(fee)}</p>}
                 </div>
                 <div className="mt-5 text-right">
@@ -549,7 +549,8 @@ const FormAddOrder: FC<{ id: number | null, editAction: boolean, customers : []}
           </div>
         </div>
       </div>
-      <Toaster />
+      {/* <Toaster /> */}
+      <ToastContainer />
     </>
   )
 }

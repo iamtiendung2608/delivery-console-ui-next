@@ -25,6 +25,7 @@ export interface OrganizationResponse {
   scale: OrganizationScale
   category: OrganizationCategory
   scope: OrganizationScope
+  walletAddress: string
 }
 
 type UserStatus = 'ACTIVE' | 'INACTIVE' | 'BLOCK';
@@ -53,7 +54,7 @@ const SettingsComponent: React.FC<Props> = ({ user, organization }) => {
   });
 
   const orgFormik = useFormik<OrganizationResponse>({
-    initialValues: organization || { id: 0, name: '', scale: OrganizationScale.SMALL, category: OrganizationCategory.SPORT, scope: OrganizationScope.PERSONAL, description: '' },
+    initialValues: organization || { id: 0, name: '', scale: OrganizationScale.SMALL, category: OrganizationCategory.SPORT, scope: OrganizationScope.PERSONAL, description: '', walletAddress: ''},
     onSubmit: async (values, { resetForm }) => {
       try {
         const response = await actionEditOrganization(values);
@@ -186,6 +187,22 @@ const SettingsComponent: React.FC<Props> = ({ user, organization }) => {
                         disabled={true}
                       />
                     </div>
+                  </div>
+                  <div className='mb-5.5'>
+                    <label className='mb-3 block text-sm font-medium text-black dark:text-white' htmlFor='wallet address'>
+                      Wallet Address
+                    </label>
+                    <input
+                        className='w-full rounded border border-stroke bg-gray py-3 pl-3 pr-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary'
+                        type='email'
+                        name='email'
+                        id='emailAddress'
+                        placeholder='Enter your email'
+                        value={orgFormik.values.walletAddress}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        disabled={true}
+                      />
                   </div>
                   <div className='flex justify-end gap-4.5'>
                     <button
