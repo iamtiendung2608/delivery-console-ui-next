@@ -43,6 +43,7 @@ const FormAddCustomer: FC<{ formAddCustomer: FormAddCustomerRequest, editAction:
         if (response === 200) {
           toast.success("Create customer success");
           router.push('/customers');
+          router.refresh();
         } else {
           toast.error("Create customer fail!");
           resetForm();
@@ -53,6 +54,7 @@ const FormAddCustomer: FC<{ formAddCustomer: FormAddCustomerRequest, editAction:
         if (response === 200) {
           toast.success("Update customer success");
           router.push('/customers');
+          router.refresh();
         } else {
           toast.error("Update customer fail!");
           resetForm();

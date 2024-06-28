@@ -21,13 +21,13 @@ export interface ConfirmSignupProps {
   scope: OrganizationScope
 }
 export enum OrganizationScale {
-  SMALL = 'small', LARGE = 'large', MEDIUM = 'medium'
+  SMALL = 'SMALL', LARGE = 'LARGE', MEDIUM = 'MEDIUM'
 }
 export enum OrganizationCategory {
-  FASHION = 'fashion', SPORT = 'sport', FRAGILE = 'fragile'
+  FASHION = 'FASHION', SPORT = 'SPORT', FRAGILE = 'FRAGILE'
 }
 export enum OrganizationScope {
-  PERSONAL = 'personal', ORGANIZATION = 'organization'
+  PERSONAL = 'PERSONAL', ORGANIZATION = 'ORGANIZATION'
 }
 interface ConfirmSignupRequest {
   id: number;
